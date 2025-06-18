@@ -1,7 +1,12 @@
 #!/bin/bash -ex
 
 SOC=$(pwd)
-CST=../linux64/bin/cst
+if [ $(uname -m) = "aarch64" ]
+then
+    CST=../linux-arm64/bin/cst
+else
+    CST=../linux64/bin/cst
+fi
 O=${SOC}/signed/u
 
 install -d ${O}

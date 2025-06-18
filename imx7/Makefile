@@ -1,3 +1,9 @@
+ifeq ($(shell uname -m),aarch64)
+    BIN_ROOT = linux-arm64
+else
+    BIN_ROOT = linux64
+endif
+
 all: build
 
 crts/SRK1_sha256_2048_65537_v3_ca_crt.pem:
@@ -11,7 +17,7 @@ srk:	crts/SRK_1_2_3_4_*.bin
 hab/signed/k hab/signed/u hab/signed/f: crts/SRK_1_2_3_4_*.bin
 	cd hab && ../tools/csf.$(@F)
 
-sign_req: srk linux64/bin/cst
+sign_req: srk $(BIN_ROOT)/bin/cst
 
 kernel_in: hab/zImage hab/csf.in
 kernel:	sign_req kernel_in hab/signed/k
@@ -30,6 +36,6 @@ clean_keys:
 clean_all: clean clean_keys
 
 clean_yocto:
-	rm -rf ca crts linux64 keys tools hab
+	rm -rf ca crts $(BIN_ROOT) keys tools hab
 
 build: kernel u-boot fuse

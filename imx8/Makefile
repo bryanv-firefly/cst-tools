@@ -1,3 +1,9 @@
+ifeq ($(shell uname -m),aarch64)
+    BIN_ROOT = linux-arm64
+else
+    BIN_ROOT = linux64
+endif
+
 all: build
 
 help:
@@ -45,7 +51,7 @@ hab/signed/k/signed: crts/SRK_1_2_3_4_*.bin
 hab/signed/kgrub/signed: crts/SRK_1_2_3_4_*.bin
 	cd hab && kload=0x58000000 kout=$(shell basename $(@D)) ../tools/csf.k
 
-sign_req: srk linux64/bin/cst
+sign_req: srk $(BIN_ROOT)/bin/cst
 
 kernel_in: hab/Image hab/csf_additional_images.in
 kernel:	sign_req kernel_in hab/signed/k/signed hab/signed/kgrub/signed
@@ -66,6 +72,6 @@ clean_keys:
 clean_all: clean clean_keys
 
 clean_yocto:
-	rm -rf ca crts linux64 keys tools hab
+	rm -rf ca crts $(BIN_ROOT) keys tools hab
 
 build: kernel imx-boot uefi fuse

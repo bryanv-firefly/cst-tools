@@ -1,7 +1,12 @@
 #!/bin/bash -ex
 
 SOC=$(pwd)
-CST=../linux64/bin/cst
+if [ $(uname -m) = "aarch64" ]
+then
+    CST=../linux-arm64/bin/cst
+else
+    CST=../linux64/bin/cst
+fi
 
 command -v ${CST} &>/dev/null
 if [[ $? -ne 0 ]];then
